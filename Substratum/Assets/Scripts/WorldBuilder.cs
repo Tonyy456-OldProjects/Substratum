@@ -23,14 +23,7 @@ public class WorldBuilder : MonoBehaviour
                 DirtBlock dirt;
                 for (int j = 0; j < worldWidth; j++)
                 {
-                    if(i == 0 && j == 0)
-                    {
-                        dirt = dirtFab;
-                    }
-                    else
-                    {
-                        dirt = Instantiate(dirtFab) as DirtBlock;
-                    }
+                    dirt = Instantiate(dirtFab) as DirtBlock;
 
                     float posX = (offset * j) + startPos.x;
                     float posY = -(offset * i) + startPos.y;
@@ -42,14 +35,7 @@ public class WorldBuilder : MonoBehaviour
                 StoneBlock stone;
                 for (int k = 0; k < worldWidth; k++)
                 {
-                    if (i == surfaceDepth && k == 0)
-                    {
-                        stone = stoneFab;
-                    }
-                    else
-                    {
-                        stone = Instantiate(stoneFab) as StoneBlock;
-                    }
+                    stone = Instantiate(stoneFab) as StoneBlock;
 
                     float posX = (offset * k) + startPos.x;
                     float posY = -(offset * i) + startPos.y;
