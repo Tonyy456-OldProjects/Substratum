@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlatformerPlayer : MonoBehaviour
 {
-    private float speed = 4.5f;
+    private float speed = 5f;
     private float jumpForce = 5.0f;
 
 
@@ -28,10 +28,14 @@ public class PlatformerPlayer : MonoBehaviour
         Vector3 max = box.bounds.max;
         Vector3 min = box.bounds.min;
         Vector2 corner1 = new Vector2(max.x, min.y - .1f);
-        Vector2 corner2 = new Vector2(min.x, min.y - .2f);
+        Vector2 corner2 = new Vector2(min.x, min.y - .1f);
         Collider2D hit = Physics2D.OverlapArea(corner1, corner2);
 
-        bool grounded = hit != null;
+        bool grounded = false;
+        if(hit != null)
+        {
+            grounded = true;
+        }
         if(grounded && Input.GetKeyDown(KeyCode.Space))
         {
             body.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
