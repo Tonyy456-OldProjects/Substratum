@@ -41,17 +41,19 @@ public class test_world_gen : MonoBehaviour
     {
         tileGroup = new GameObject("Tiles");
         tileGroup.transform.position = Vector3.zero;
+        CreateChunks();
+
         if (!simple) {
             float seed = Random.Range(-10000, 10000);
             GetNoise(seed);
-            CreateChunks();
+            
             GeneratePerlinTerr(seed);        
         } 
         else
         {
             GenerateSimple();
         }
-        player.transform.position = new Vector3(worldSize / 2, worldSize + 2);
+        player.transform.position = new Vector3(worldSize / 2, worldSize + 4);
     }  
 
     private void GeneratePerlinTerr(float seed)
@@ -106,8 +108,8 @@ public class test_world_gen : MonoBehaviour
 
     private GameObject GetRandomBlock()
     {
-        int index = Random.Range(0, blocks.Length);
-        GameObject newTile = Instantiate(blocks[index]);
+        int index = Random.Range(0, blocks.Length - 1);
+        GameObject newTile = blocks[index];
         return newTile;
     }
 
@@ -183,8 +185,7 @@ public class test_world_gen : MonoBehaviour
             for (int j = 0; j < worldSize; j++)
             {
                 GameObject newTile = GetRandomBlock();
-                newTile.transform.parent = this.transform;
-                new Vector3(.5f + i, .5f + j);
+                PlaceTile(newTile, i, j, 0f);
             }
         }
     }
