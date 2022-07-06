@@ -3,6 +3,14 @@ A sandbox platformer all about what is underground.
 Made in Unity by Anthony D'Alesandro and Taylor Liu.
 
 # Resources  
+## *Terraria Unity Tutorial*
+https://www.youtube.com/watch?v=rgUF0G-pGlY&t=33s
+
+## *Terraria IDs*
+https://terraria.fandom.com/wiki/Tile_IDs#0_.E2.86.92_30
+
+## *Sprite Assets*
+https://www.spriters-resource.com/pc_computer/terraria/sheet/50634/
 
 ## *Developer Websites*  
 A trello board for developement:  
