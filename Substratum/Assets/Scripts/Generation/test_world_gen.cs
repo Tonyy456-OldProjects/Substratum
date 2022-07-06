@@ -7,41 +7,40 @@ using UnityEngine.Tilemaps;
 
 public class test_world_gen : MonoBehaviour
 {
-    //User testing variables
-    [Header("Options")]
-    public bool simple = true;
+    [Header("Generation Settings")]
     public bool generateCaves = true;
-
-    [Header("World Heights")]
+    public bool simple = true;
     public int worldSize = 200;
     public int dirtLayerHeight = 5;
     public int heightAddition = 20;
-
-    [Header("Tree Generation")]
-    public int treeChance = 10;
-    public int minTreeHeight = 7;
-    public int maxTreeHeight = 25;
-    
-
-    [Header("Perlin Noise")]
     public float heightMultiplier = 40f;
+
+    [Header("Chunk Settings")]
+    public int chunkSize = 16;
+    private GameObject[] chunks;
+
+    [Header("Noise Settings")]    
     public float caveFreq = 0.08f;
     public float terrFreq = 0.05f;
     public float blockThreshold = 0.6f;
+    public Texture2D noise;
 
+    [Header("Tree Settings")]
+    public int treeChance = 10;
+    public int minTreeHeight = 7;
+    public int maxTreeHeight = 25;
 
     [Header("Game Objects")]
     [SerializeField] GameObject[] blocks;
     [SerializeField] GameObject[] treeParts;
-    [SerializeField] GameObject player;   
-
-    private Texture2D noise;
+    [SerializeField] GameObject player;      
 
     void Start()
     {
         if (!simple) {
             float seed = Random.Range(-10000, 10000);
             GetNoise(seed);
+            CreateChunks();
             GeneratePerlinTerr(seed);        
         } 
         else
@@ -51,20 +50,8 @@ public class test_world_gen : MonoBehaviour
         player.transform.position = new Vector3(worldSize / 2, worldSize + 2);
     }  
 
-    //Generates land with caves. REQUIRES=<GetNoise()> called
     private void GeneratePerlinTerr(float seed)
     {
-        //Heiarchy objects
-        GameObject blocks = new GameObject("Blocks");
-        blocks.transform.parent = transform;
-        blocks.transform.position = Vector3.zero;
-        int numBlocksPlaced = 0;
-
-        GameObject trees = new GameObject("Trees");
-        trees.transform.position = Vector3.zero;
-        trees.transform.parent = transform;
-        int numTreesPlaces = 0;
-
         //Place Blocks
         for (int x = 0; x < worldSize; x++)
         {
@@ -75,21 +62,30 @@ public class test_world_gen : MonoBehaviour
                 float pixelVal = noise.GetPixel(x, y).r;
                 if (!generateCaves || pixelVal <= blockThreshold)
                 {
-                    PlaceTile(targetTile, x, y, 0f, blocks.transform);
-                    numBlocksPlaced++;
+                    PlaceTile(targetTile, x, y, 0f);
                     if (y > height - 1 && 0 == Random.Range(0, treeChance))
                     {
-                        PlaceTree(x, y + 1, trees);
-                        numTreesPlaces++;
+                        PlaceTree(x, y + 1);
                     }
                 }
             }           
         }
-        blocks.name = blocks.name + $"_{numBlocksPlaced}";
-        trees.name = trees.name + $"_{numTreesPlaces}";
     }
 
-    // Generates noise texture2d for world generation
+    private void CreateChunks()
+    {
+        int numChunks = worldSize / chunkSize;
+        chunks = new GameObject[numChunks];
+        for (int i = 0; i < numChunks; i++)
+        {
+            GameObject newChunk = new GameObject(i.ToString());
+            newChunk.transform.parent = transform;
+            newChunk.transform.position = Vector3.zero;
+            chunks[i] = newChunk;
+        }
+
+    }
+
     private void GetNoise(float seed)
     {
         noise = new Texture2D(worldSize, worldSize);
@@ -104,7 +100,6 @@ public class test_world_gen : MonoBehaviour
         noise.Apply();
     }
 
-    // Get Random Block
     private GameObject GetRandomBlock()
     {
         int index = Random.Range(0, blocks.Length);
@@ -128,47 +123,55 @@ public class test_world_gen : MonoBehaviour
 
     }
 
-    private void PlaceTile(GameObject target, float x, float y, float layerAddition = 0, Transform parentTransf = null)
+    private int GetChunkCoor(int x)
     {
-        GameObject tile = Instantiate(target);
-        tile.transform.name = tile.transform.name.Replace("(Clone)", "");       
-        tile.transform.position = new Vector3(.5f + x, .5f + y, layerAddition);
-
-        if (parentTransf == null)
-            tile.transform.parent = transform;
-        else
-            tile.transform.parent = parentTransf;
+        if (chunks == null) return -2;
+        int chunkCoor = (x / chunkSize);
+        if (chunks.Length <= chunkCoor) return -1;
+        return chunkCoor;
     }
 
-    private void PlaceTree(float x, float y, GameObject parentObject = null)
+    private void PlaceTile(GameObject target, int x, int y, float layerAddition = 0)
     {
-        //Heiarchy
-        GameObject parentNode = new GameObject($"Tree_{x}_{y}");
-        parentNode.transform.position = new Vector3(0, 0, 0);
-        if (parentObject != null)
-            parentNode.transform.parent = parentObject.transform;
-        else
-            parentNode.transform.parent = transform;
+        GameObject tile = Instantiate(target);
 
+        //get chunk
+        int chunkCoor = GetChunkCoor(x);
+        if (chunkCoor < 0)
+        {
+            Destroy(tile);
+            return;
+        } 
+        GameObject chunk = chunks[chunkCoor];
+
+        //tile data
+        tile.transform.name = tile.transform.name.Replace("(Clone)", "");
+        tile.transform.position = new Vector3(.5f + x, .5f + y, layerAddition);
+
+        //fix heiarchy
+        tile.transform.parent = chunk.transform;
+    }
+
+    private void PlaceTree(int x, int y, GameObject parentObject = null)
+    {
         //Place Tree
         int treeHeight = Random.Range(minTreeHeight, maxTreeHeight);
         for (int i = 0; i < treeHeight; i++)
         {
-            PlaceTile(treeParts[0], x, y + i, 0.1f, parentNode.transform);
+            PlaceTile(treeParts[0], x, y + i, 0.1f);
             if(Random.Range(0, 7) == 0 && i > 3)
             {
                 int branch = Random.Range(0, 2);
                 if(branch == 0)
-                    PlaceTile(treeParts[1], x - 1, y + i, 0.06f, parentNode.transform);
+                    PlaceTile(treeParts[1], x - 1, y + i, 0.06f);
                 else
-                    PlaceTile(treeParts[2], x + 1, y + i, 0.06f, parentNode.transform);
+                    PlaceTile(treeParts[2], x + 1, y + i, 0.06f);
             }
         }
-        PlaceTile(treeParts[3], x, y + treeHeight + 2, 0.05f, parentNode.transform);
+        PlaceTile(treeParts[3], x, y + treeHeight + 2, 0.05f);
 
     }
 
-    // This generates a flat caveless land
     private void GenerateSimple()
     {
         for (int i = 0; i < worldSize; i++)

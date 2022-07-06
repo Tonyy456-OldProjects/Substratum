@@ -326,7 +326,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0
-  m_GravityScale: 4
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_Interpolate: 2
   m_SleepingMode: 1
@@ -429,16 +429,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c03e5ada15701b44ba38639295370a4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  simple: 0
   generateCaves: 1
-  treeChance: 10
+  simple: 0
   worldSize: 100
+  dirtLayerHeight: 5
   heightAddition: 20
   heightMultiplier: 40
+  chunkSize: 16
   caveFreq: 0.08
   terrFreq: 0.05
   blockThreshold: 0.6
-  dirtLayerHeight: 5
+  noise: {fileID: 0}
+  treeChance: 10
+  minTreeHeight: 7
+  maxTreeHeight: 25
   blocks:
   - {fileID: 4987613049665922088, guid: f2a9cc16bfbcef647bdb0164c511b7e4, type: 3}
   - {fileID: 3525430744188788433, guid: 4883ae9aaf2f91e4ba9af5fccb09c3f3, type: 3}
