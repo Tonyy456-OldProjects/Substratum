@@ -33,10 +33,14 @@ public class test_world_gen : MonoBehaviour
     [Header("Game Objects")]
     [SerializeField] GameObject[] blocks;
     [SerializeField] GameObject[] treeParts;
-    [SerializeField] GameObject player;      
+    [SerializeField] GameObject player;
+
+    private GameObject tileGroup;
 
     void Start()
     {
+        tileGroup = new GameObject("Tiles");
+        tileGroup.transform.position = Vector3.zero;
         if (!simple) {
             float seed = Random.Range(-10000, 10000);
             GetNoise(seed);
@@ -79,7 +83,7 @@ public class test_world_gen : MonoBehaviour
         for (int i = 0; i < numChunks; i++)
         {
             GameObject newChunk = new GameObject(i.ToString());
-            newChunk.transform.parent = transform;
+            newChunk.transform.parent = tileGroup.transform;
             newChunk.transform.position = Vector3.zero;
             chunks[i] = newChunk;
         }
