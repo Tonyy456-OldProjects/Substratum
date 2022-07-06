@@ -6,9 +6,9 @@ contains all the code and unity objects
 ├── Prefabs  
 ├── Scenes  
 ├── Scripts  
-&nbsp;&nbsp;&nbsp;└── Generation  
+&nbsp;&nbsp;&nbsp;&nbsp;└── Generation  
 └── Textures  
-&nbsp;&nbsp;&nbsp;└── Animation   
+&nbsp;&nbsp;&nbsp;&nbsp;└── Animation   
 '''  
 
 
