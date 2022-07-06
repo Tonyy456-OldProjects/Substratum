@@ -6,8 +6,8 @@ public class PlatformerPlayer : MonoBehaviour
 {
     public bool creativeMode = false;
 
-    private float speed = 5f;
-    private float jumpForce = 5.0f;
+    private float speed = 15f;
+    private float jumpForce = 30f;
 
 
     private Rigidbody2D body;
