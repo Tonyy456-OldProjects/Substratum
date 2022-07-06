@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlatformerPlayer : MonoBehaviour
 {
+    public bool creativeMode = false;
+
     private float speed = 5f;
     private float jumpForce = 5.0f;
 
@@ -24,6 +26,14 @@ public class PlatformerPlayer : MonoBehaviour
         float deltaX = Input.GetAxis("Horizontal") * speed;
         Vector2 movement = new Vector2(deltaX, body.velocity.y);
         body.velocity = movement;
+
+        if(creativeMode)
+        {
+            float deltaY = Input.GetAxis("Vertical") * speed;
+            Vector2 movement2 = new Vector2(body.velocity.x, deltaY);
+            body.velocity = movement2;
+            return;
+        }
 
         Vector3 max = box.bounds.max;
         Vector3 min = box.bounds.min;

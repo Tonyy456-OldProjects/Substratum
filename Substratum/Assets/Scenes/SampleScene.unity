@@ -342,6 +342,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 2061642685}
   smoothTime: 0.2
+  active: 0
 --- !u!1 &1918561377
 GameObject:
   m_ObjectHideFlags: 0
@@ -489,7 +490,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0
-  m_GravityScale: 1
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_Interpolate: 2
   m_SleepingMode: 1
@@ -507,6 +508,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 619faabc3d350d44fa2ebc25e51e7f6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  creativeMode: 0
 --- !u!61 &2061642691
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -577,11 +579,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c03e5ada15701b44ba38639295370a4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  simple: 0
   Blocks:
   - {fileID: 4987613049665922088, guid: f2a9cc16bfbcef647bdb0164c511b7e4, type: 3}
   - {fileID: 3525430744188788433, guid: 4883ae9aaf2f91e4ba9af5fccb09c3f3, type: 3}
   player: {fileID: 2061642683}
-  tilemap: {fileID: 15295944}
-  dirt: {fileID: 11400000, guid: 9398731d5bd42bb459ad547a1756558a, type: 2}
-  stone: {fileID: 11400000, guid: a112e38408e48fd47ae77e7b807afbdf, type: 2}
-  simple: 1
+  worldSize: 200
+  heightAddition: 20
+  heightMultiplier: 40
+  caveFreq: 0.08
+  terrFreq: 0.05
+  blockThreshold: 0.6
