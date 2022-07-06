@@ -14,6 +14,7 @@ contains all the code and unity objects
 - Fix compositecollider2d
 - Fix chunks to be 16x16
 - fix chunks to load in and out
+- Tilemap
 
 # GOALS
 - Make infinitely generating world down
