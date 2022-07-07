@@ -36,9 +36,11 @@ public class WorldGenerator : MonoBehaviour
 
     public Tilemap Tilemap;
     public Tile[] Tiles;
+    public bool generate = true;
 
     void Start()
     {
+        if (!generate) return;
         if (!simple)
         {
             float seed = Random.Range(-10000, 10000);
@@ -50,7 +52,7 @@ public class WorldGenerator : MonoBehaviour
         {
             GenerateSimple();
         }
-        player.transform.position = new Vector3(worldSize / 2, worldSize + 4);
+        player.transform.position = new Vector3(worldSize / 2, 225);
     }  
 
     private void GeneratePerlinTerr(float seed)
