@@ -5,7 +5,7 @@ using UnityEngine.Tilemaps;
 
 /* SOURCE: https://www.youtube.com/watch?v=_XtOOhxRsWY */
 
-public class test_world_gen : MonoBehaviour
+public class WorldGenerator : MonoBehaviour
 {
     [Header("Generation Settings")]
     public bool generateCaves = true;
@@ -37,9 +37,23 @@ public class test_world_gen : MonoBehaviour
 
     private GameObject tileGroup;
 
+    public Tilemap Tilemap;
+    public Tile Tile;
+
     void Start()
     {
-        tileGroup = new GameObject("Tiles");
+        Tilemap.ClearAllTiles();
+        for(int i = 0; i < 5; i++)
+        {
+            for(int j = 0; j < 5; j++)
+            {
+                Tilemap.SetTile(new Vector3Int(i * 2, j * 2, 0), Tile);
+            }
+        }
+        
+
+
+        /*tileGroup = new GameObject("Tiles");
         tileGroup.transform.position = Vector3.zero;
         CreateChunks();
 
@@ -53,7 +67,7 @@ public class test_world_gen : MonoBehaviour
         {
             GenerateSimple();
         }
-        player.transform.position = new Vector3(worldSize / 2, worldSize + 4);
+        player.transform.position = new Vector3(worldSize / 2, worldSize + 4);*/
     }  
 
     private void GeneratePerlinTerr(float seed)
