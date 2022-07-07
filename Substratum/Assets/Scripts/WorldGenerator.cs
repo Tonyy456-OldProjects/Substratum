@@ -31,43 +31,26 @@ public class WorldGenerator : MonoBehaviour
     public int maxTreeHeight = 25;
 
     [Header("Game Objects")]
-    [SerializeField] GameObject[] blocks;
     [SerializeField] GameObject[] treeParts;
     [SerializeField] GameObject player;
 
-    private GameObject tileGroup;
-
     public Tilemap Tilemap;
-    public Tile Tile;
+    public Tile[] Tiles;
 
     void Start()
     {
-        Tilemap.ClearAllTiles();
-        for(int i = 0; i < 5; i++)
+        if (!simple)
         {
-            for(int j = 0; j < 5; j++)
-            {
-                Tilemap.SetTile(new Vector3Int(i * 2, j * 2, 0), Tile);
-            }
-        }
-        
-
-
-        /*tileGroup = new GameObject("Tiles");
-        tileGroup.transform.position = Vector3.zero;
-        CreateChunks();
-
-        if (!simple) {
             float seed = Random.Range(-10000, 10000);
             GetNoise(seed);
-            
-            GeneratePerlinTerr(seed);        
-        } 
+
+            GeneratePerlinTerr(seed);
+        }
         else
         {
             GenerateSimple();
         }
-        player.transform.position = new Vector3(worldSize / 2, worldSize + 4);*/
+        player.transform.position = new Vector3(worldSize / 2, worldSize + 4);
     }  
 
     private void GeneratePerlinTerr(float seed)
@@ -78,11 +61,11 @@ public class WorldGenerator : MonoBehaviour
             float height = Mathf.PerlinNoise((x + seed) * terrFreq, seed * terrFreq) * heightMultiplier + heightAddition;
             for (int y = 0; y < height; y++)
             {
-                GameObject targetTile = GetTargetBlock(y, height);
+                Tile targetTile = GetTargetBlock(y, height);
                 float pixelVal = noise.GetPixel(x, y).r;
                 if (!generateCaves || pixelVal <= blockThreshold)
                 {
-                    PlaceTile(targetTile, x, y, 0f);
+                    PlaceTile(targetTile, x, y, 0);
                     if (y > height - 1 && 0 == Random.Range(0, treeChance))
                     {
                         PlaceTree(x, y + 1);
@@ -90,20 +73,6 @@ public class WorldGenerator : MonoBehaviour
                 }
             }           
         }
-    }
-
-    private void CreateChunks()
-    {
-        int numChunks = worldSize / chunkSize;
-        chunks = new GameObject[numChunks];
-        for (int i = 0; i < numChunks; i++)
-        {
-            GameObject newChunk = new GameObject(i.ToString());
-            newChunk.transform.parent = tileGroup.transform;
-            newChunk.transform.position = Vector3.zero;
-            chunks[i] = newChunk;
-        }
-
     }
 
     private void GetNoise(float seed)
@@ -120,14 +89,13 @@ public class WorldGenerator : MonoBehaviour
         noise.Apply();
     }
 
-    private GameObject GetRandomBlock()
+    private Tile GetRandomBlock()
     {
-        int index = Random.Range(0, blocks.Length - 1);
-        GameObject newTile = blocks[index];
+        int index = Random.Range(0, Tiles.Length - 1);
+        Tile newTile = Tiles[index];
         return newTile;
     }
-
-    private GameObject GetTargetBlock(int y, float height)
+    private Tile GetTargetBlock(int y, float height)
     {
         int index;
         if(y < height - dirtLayerHeight) {
@@ -139,42 +107,17 @@ public class WorldGenerator : MonoBehaviour
         {
             index = 2;
         }
-        return blocks[index];
+        return Tiles[index];
 
     }
-
-    private int GetChunkCoor(int x)
+    private void PlaceTile(Tile tile, int x, int y, int layerAddition = 0)
     {
-        if (chunks == null) return -2;
-        int chunkCoor = (x / chunkSize);
-        if (chunks.Length <= chunkCoor) return -1;
-        return chunkCoor;
+        Tilemap.SetTile(new Vector3Int(x, y, layerAddition), tile);
     }
 
-    private void PlaceTile(GameObject target, int x, int y, float layerAddition = 0)
+    private void PlaceTree(int x, int y)
     {
-        GameObject tile = Instantiate(target);
-
-        //get chunk
-        int chunkCoor = GetChunkCoor(x);
-        if (chunkCoor < 0)
-        {
-            Destroy(tile);
-            return;
-        } 
-        GameObject chunk = chunks[chunkCoor];
-
-        //tile data
-        tile.transform.name = tile.transform.name.Replace("(Clone)", "");
-        tile.transform.position = new Vector3(.5f + x, .5f + y, layerAddition);
-
-        //fix heiarchy
-        tile.transform.parent = chunk.transform;
-    }
-
-    private void PlaceTree(int x, int y, GameObject parentObject = null)
-    {
-        //Place Tree
+        /*//Place Tree
         int treeHeight = Random.Range(minTreeHeight, maxTreeHeight);
         for (int i = 0; i < treeHeight; i++)
         {
@@ -188,7 +131,7 @@ public class WorldGenerator : MonoBehaviour
                     PlaceTile(treeParts[2], x + 1, y + i, 0.06f);
             }
         }
-        PlaceTile(treeParts[3], x, y + treeHeight + 2, 0.05f);
+        PlaceTile(treeParts[3], x, y + treeHeight + 2, 0.05f);*/
 
     }
 
@@ -198,8 +141,8 @@ public class WorldGenerator : MonoBehaviour
         {
             for (int j = 0; j < worldSize; j++)
             {
-                GameObject newTile = GetRandomBlock();
-                PlaceTile(newTile, i, j, 0f);
+                Tile newTile = GetRandomBlock();
+                PlaceTile(newTile, i, j, 0);
             }
         }
     }
